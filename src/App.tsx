@@ -3,8 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 const schema = z.object({
-  example: z.string().min(1, { message: 'Davai tik' }),
-  exampleRequired: z.string().min(1, { message: 'Nagi blt' }),
+  example: z.string().min(1, { message: 'Davai tik' }).max(5, { message: 'Per daug' }),
+  exampleRequired: z.string().min(1, { message: 'Nagi blt' }).max(5, { message: 'Per daug asdasd' }),
 });
 
 type Inputs = z.infer<typeof schema>;
