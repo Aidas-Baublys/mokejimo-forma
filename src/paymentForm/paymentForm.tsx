@@ -4,7 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Select } from 'antd';
 import { usePaymentContext } from './paymentFormState';
 import { CONSTANTS, createSchema, paymentFormConfig, PaymentFormInputs } from './paymentFormConfig';
-import RenderInputs from '../renderInputs';
+import RenderInputs from '../renderInputs/renderInputs';
+
+import styles from './paymentForm.module.css';
 
 const { Option } = Select;
 
@@ -56,7 +58,7 @@ const PaymentForm: FC = () => {
   const onSubmit: SubmitHandler<PaymentFormInputs> = data => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       {paymentFormConfig.map(config => (
         <RenderInputs key={config.key} config={config} errors={errors} control={control} />
       ))}
@@ -70,6 +72,7 @@ const PaymentForm: FC = () => {
           <Select
             {...field}
             placeholder={CONSTANTS.payerAccount}
+            className={styles.dropdown}
             defaultValue={payerAccounts[0].iban}
             onChange={value => {
               const account = payerAccounts.find(acc => acc.iban === value);
@@ -80,14 +83,15 @@ const PaymentForm: FC = () => {
             }}>
             {payerAccounts.map(account => (
               <Option key={account.id} value={account.iban}>
-                {account.iban}
+                {account.iban} Balance: {account.balance}
               </Option>
             ))}
           </Select>
         )}
       />
-      <p>Max amount: {selectedAccount.balance}</p>
       {errors.payerAccount && <p>{errors.payerAccount.message}</p>}
+
+      <hr className={styles.line} />
 
       <Button type='primary' htmlType='submit'>
         Submit

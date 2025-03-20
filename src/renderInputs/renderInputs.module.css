@@ -1,0 +1,23 @@
+.container {
+  position: relative;
+}
+
+.inputs {
+  margin-bottom: 20px;
+}
+
+.inputsError {
+  border: 1px solid rgb(219, 0, 0);
+}
+
+.inputNumber {
+  width: 100%;
+}
+
+.error {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  color: rgb(219, 0, 0);
+  font-size: 12px;
+}
