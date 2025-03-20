@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { InputConfig } from '../types';
 
 const requiredMessage = 'Privalomas laukas';
 
@@ -38,7 +39,7 @@ const schemaType = createSchema(1000, true);
 
 export type PaymentFormInputs = z.infer<typeof schemaType>;
 
-export const paymentFormConfig = [
+export const paymentFormConfig: InputConfig[] = [
   {
     key: 1,
     type: 'number',
@@ -65,7 +66,7 @@ export const paymentFormConfig = [
     type: 'dropdown',
     name: CONSTANTS.payerAccount,
     label: CONSTANTS.payerAccount,
-    placeholder: 'Select payer account',
+    placeholder: CONSTANTS.payerAccount,
   },
   {
     key: 5,

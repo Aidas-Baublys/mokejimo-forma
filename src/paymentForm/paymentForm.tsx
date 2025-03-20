@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Input, InputNumber, Select } from 'antd';
+import { Button, Select } from 'antd';
 import { usePaymentContext } from './paymentFormState';
-import { CONSTANTS, createSchema, PaymentFormInputs } from './paymentFormConfig';
+import { CONSTANTS, createSchema, paymentFormConfig, PaymentFormInputs } from './paymentFormConfig';
+import RenderInputs from '../renderInputs';
 
 const { Option } = Select;
 
@@ -33,6 +34,9 @@ const PaymentForm: FC = () => {
     formState: { errors },
   } = useForm<PaymentFormInputs>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      [CONSTANTS.payerAccount]: payerAccounts[0].iban,
+    },
   });
 
   const payeeAccount = watch(CONSTANTS.payeeAccount);
@@ -53,39 +57,19 @@ const PaymentForm: FC = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Controller
-        name='amount'
-        control={control}
-        render={({ field }) => (
-          <InputNumber {...field} placeholder='amount' onChange={value => field.onChange(value)} />
-        )}
-      />
-      {errors.amount && <p>{errors.amount.message}</p>}
-
-      <Controller
-        name='payeeAccount'
-        control={control}
-        render={({ field }) => (
-          <Input {...field} placeholder='payeeAccount' onChange={value => field.onChange(value)} />
-        )}
-      />
-      {errors.payeeAccount && <p>{errors.payeeAccount.message}</p>}
-
-      <Controller
-        name='purpose'
-        control={control}
-        render={({ field }) => <Input {...field} placeholder='purpose' onChange={value => field.onChange(value)} />}
-      />
-      {errors.purpose && <p>{errors.purpose.message}</p>}
+      {paymentFormConfig.map(config => (
+        <RenderInputs key={config.key} config={config} errors={errors} control={control} />
+      ))}
 
       {/* It makes more sense for this field to be a dropdown */}
+      <label htmlFor={CONSTANTS.payerAccount}>{CONSTANTS.payerAccount}</label>
       <Controller
-        name='payerAccount'
+        name={CONSTANTS.payerAccount}
         control={control}
         render={({ field }) => (
           <Select
             {...field}
-            placeholder='Select payer account'
+            placeholder={CONSTANTS.payerAccount}
             defaultValue={payerAccounts[0].iban}
             onChange={value => {
               const account = payerAccounts.find(acc => acc.iban === value);
@@ -104,13 +88,6 @@ const PaymentForm: FC = () => {
       />
       <p>Max amount: {selectedAccount.balance}</p>
       {errors.payerAccount && <p>{errors.payerAccount.message}</p>}
-
-      <Controller
-        name='payee'
-        control={control}
-        render={({ field }) => <Input {...field} placeholder='payee' onChange={value => field.onChange(value)} />}
-      />
-      {errors.payee && <p>{errors.payee.message}</p>}
 
       <Button type='primary' htmlType='submit'>
         Submit
