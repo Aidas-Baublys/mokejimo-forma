@@ -1,67 +1,58 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 import { LanguageProvider } from '../translations/translationState';
 import { PaymentProvider } from './paymentFormState';
 import PaymentForm from './paymentForm';
 
+const renderComponent = () => {
+  return render(
+    <LanguageProvider>
+      <PaymentProvider>
+        <PaymentForm />
+      </PaymentProvider>
+    </LanguageProvider>,
+  );
+};
+
 describe('PaymentForm', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it('renders the form and submits with valid data', async () => {
-    const mockSubmit = vi.fn(); // Mock the submit handler
+    renderComponent();
 
-    render(
-      <LanguageProvider>
-        <PaymentProvider>
-          <PaymentForm />
-        </PaymentProvider>
-      </LanguageProvider>,
-    );
+    const amount = screen.getByTestId('amount');
+    await userEvent.type(amount, '1');
 
-    // Check if the form fields are rendered
-    expect(screen.getByLabelText(/payer account/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/payer account/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
+    const payeeAccountInput = screen.getByTestId(/payeeAccount/i);
+    await userEvent.type(payeeAccountInput, 'LT307300010172619169');
 
-    // Simulate selecting a payer account
-    const payerAccountDropdown = screen.getByPlaceholderText(/payer account/i);
-    userEvent.click(payerAccountDropdown);
-    const firstOption = await screen.findByText(/LT307300010172619160/i);
-    userEvent.click(firstOption);
-
-    // Simulate entering a payee account
-    const payeeAccountInput = screen.getByPlaceholderText(/payee account/i);
-    userEvent.type(payeeAccountInput, 'LT307300010172619161');
-
-    // Simulate entering a purpose
     const purposeInput = screen.getByPlaceholderText(/purpose/i);
-    userEvent.type(purposeInput, 'Payment for services');
+    await userEvent.type(purposeInput, 'Payment for services');
 
-    // Submit the form
+    const payee = screen.getByTestId('payee');
+    await userEvent.type(payee, 'John Doe');
+
+    const payerAccountDropdown = screen.getByText(/LT307300010172619160/i);
+    await userEvent.click(payerAccountDropdown);
+
+    const firstOption = screen.getByText('LT307300010172619161');
+    await userEvent.click(firstOption);
+
     const submitButton = screen.getByRole('button', { name: /submit/i });
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
-    // Wait for the form submission
-    await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalled();
-    });
+    expect(screen.queryAllByText(/This field is required/i)).toHaveLength(0);
   });
 
   it('shows validation errors for invalid data', async () => {
-    render(
-      <LanguageProvider>
-        <PaymentProvider>
-          <PaymentForm />
-        </PaymentProvider>
-      </LanguageProvider>,
-    );
+    renderComponent();
 
-    // Submit the form without entering any data
-    const submitButton = screen.getByRole('button', { name: /submit/i });
+    const submitButton = screen.getByText(/submit/i);
     userEvent.click(submitButton);
 
-    // Check for validation errors
-    expect(await screen.findByText(/payer account is required/i)).toBeInTheDocument();
-    expect(await screen.findByText(/payee account is required/i)).toBeInTheDocument();
-    expect(await screen.findByText(/purpose is required/i)).toBeInTheDocument();
+    expect(await screen.findAllByText(/This field is required/i)).toHaveLength(4);
   });
 });

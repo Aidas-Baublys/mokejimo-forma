@@ -31,6 +31,8 @@ const RenderInputs: FC<RenderInputsProps> = ({ config, errors, control }) => {
               <InputNumber
                 {...field}
                 placeholder={t(placeholder)}
+                name={name}
+                data-testid={name}
                 className={cx(styles.inputNumber, styles.inputs, {
                   [styles.inputsError]: errors[name],
                 })}
@@ -52,6 +54,8 @@ const RenderInputs: FC<RenderInputsProps> = ({ config, errors, control }) => {
               <Input
                 {...field}
                 placeholder={t(placeholder)}
+                name={name}
+                data-testid={name}
                 className={cx(styles.inputs, {
                   [styles.inputsError]: errors[name],
                 })}
@@ -73,6 +77,8 @@ const RenderInputs: FC<RenderInputsProps> = ({ config, errors, control }) => {
               <TextArea
                 {...field}
                 placeholder={t(placeholder)}
+                name={name}
+                data-testid={name}
                 className={cx(styles.inputs, {
                   [styles.inputsError]: errors[name],
                 })}
