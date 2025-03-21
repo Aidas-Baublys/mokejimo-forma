@@ -5,7 +5,7 @@ import { Button, Select } from 'antd';
 import { usePaymentContext } from './paymentFormState';
 import { CONSTANTS, createSchema, paymentFormConfig, PaymentFormInputs } from './paymentFormConfig';
 import RenderInputs from '../renderInputs/renderInputs';
-import { useLanguage } from '../translationState';
+import { useLanguage } from '../translations/translationState';
 import { formatBalance, validatePayeeAccount } from './helpers';
 import cx from 'classnames';
 

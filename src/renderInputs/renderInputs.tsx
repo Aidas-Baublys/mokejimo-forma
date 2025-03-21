@@ -4,7 +4,7 @@ import { Controller, FieldErrors } from 'react-hook-form';
 import { Input, InputNumber } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import cx from 'classnames';
-import { useLanguage } from '../translationState';
+import { useLanguage } from '../translations/translationState';
 
 import styles from './renderInputs.module.css';
 
