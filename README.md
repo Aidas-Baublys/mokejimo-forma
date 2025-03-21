@@ -29,4 +29,4 @@ npm run dev
 
 ### Comments on the assignment
 
-The iban check endpoint throws a cors error, so it is called, but always resolves to true for testing purposes. You cant find more short comments in the code.
+The iban check endpoint throws a cors error, so it is called, but always resolves to true for testing purposes. You can find more short comments in the code regarding my decitions.
