@@ -59,13 +59,6 @@ export const paymentFormConfig: InputConfig[] = [
   },
   {
     key: 4,
-    type: 'dropdown',
-    name: CONSTANTS.payerAccount,
-    label: CONSTANTS.payerAccount,
-    placeholder: CONSTANTS.payerAccount,
-  },
-  {
-    key: 5,
     type: 'string',
     name: CONSTANTS.payee,
     label: CONSTANTS.payee,

@@ -7,6 +7,7 @@ import { CONSTANTS, createSchema, paymentFormConfig, PaymentFormInputs } from '.
 import RenderInputs from '../renderInputs/renderInputs';
 import { useLanguage } from '../translationState';
 import { formatBalance, validatePayeeAccount } from './helpers';
+import cx from 'classnames';
 
 import styles from './paymentForm.module.css';
 
@@ -71,7 +72,13 @@ const PaymentForm: FC = () => {
             }}>
             {payerAccounts.map(account => (
               <Option key={account.id} value={account.iban}>
-                {account.iban} {t('balance')}: {formatBalance(account.balance, language)}
+                {account.iban} {t('balance')}:{' '}
+                <span
+                  className={cx(styles.balance, {
+                    [styles.negative]: account.balance < 0,
+                  })}>
+                  {formatBalance(account.balance, language)}
+                </span>
               </Option>
             ))}
           </Select>
