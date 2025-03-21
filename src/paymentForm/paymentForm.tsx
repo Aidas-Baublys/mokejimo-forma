@@ -5,28 +5,16 @@ import { Button, Select } from 'antd';
 import { usePaymentContext } from './paymentFormState';
 import { CONSTANTS, createSchema, paymentFormConfig, PaymentFormInputs } from './paymentFormConfig';
 import RenderInputs from '../renderInputs/renderInputs';
+import { useLanguage } from '../translationState';
+import { formatBalance, validatePayeeAccount } from './helpers';
 
 import styles from './paymentForm.module.css';
 
 const { Option } = Select;
 
-const validatePayeeAccount = async (payeeAccount: string): Promise<boolean> => {
-  try {
-    // Url always gets a CORS error
-    const response = await fetch(`https://matavi.eu/validate/?iban=${payeeAccount}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const data = await response.json();
-    return data.isValid;
-  } catch (error) {
-    // Url always gets a CORS error, so we return true for testing purposes
-    return true;
-  }
-};
-
 const PaymentForm: FC = () => {
   const [accountValid, setAccountValid] = useState<boolean>(false);
+  const { translate: t, language } = useLanguage();
   const { payerAccounts, selectedAccount, setSelectedAccount } = usePaymentContext();
   const schema = createSchema(selectedAccount.balance, accountValid);
   const {
@@ -64,14 +52,14 @@ const PaymentForm: FC = () => {
       ))}
 
       {/* It makes more sense for this field to be a dropdown */}
-      <label htmlFor={CONSTANTS.payerAccount}>{CONSTANTS.payerAccount}</label>
+      <label htmlFor={CONSTANTS.payerAccount}>{t(CONSTANTS.payerAccount)}</label>
       <Controller
         name={CONSTANTS.payerAccount}
         control={control}
         render={({ field }) => (
           <Select
             {...field}
-            placeholder={CONSTANTS.payerAccount}
+            placeholder={t(CONSTANTS.payerAccount)}
             className={styles.dropdown}
             defaultValue={payerAccounts[0].iban}
             onChange={value => {
@@ -83,18 +71,18 @@ const PaymentForm: FC = () => {
             }}>
             {payerAccounts.map(account => (
               <Option key={account.id} value={account.iban}>
-                {account.iban} Balance: {account.balance}
+                {account.iban} {t('balance')}: {formatBalance(account.balance, language)}
               </Option>
             ))}
           </Select>
         )}
       />
-      {errors.payerAccount && <p>{errors.payerAccount.message}</p>}
+      {errors.payerAccount && <p>{t(errors.payerAccount.message as string)}</p>}
 
       <hr className={styles.line} />
 
       <Button type='primary' htmlType='submit'>
-        Submit
+        {t('submit')}
       </Button>
     </form>
   );

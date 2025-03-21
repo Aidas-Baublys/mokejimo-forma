@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { InputConfig } from '../types';
 
-const requiredMessage = 'Privalomas laukas';
-
 export const CONSTANTS = {
   amount: 'amount',
   payeeAccount: 'payeeAccount',
@@ -14,24 +12,22 @@ export const CONSTANTS = {
 export const createSchema = (maxAmount: number, isPayeeAccountValid: boolean) => {
   return z.object({
     [CONSTANTS.amount]: z
-      .number({ message: requiredMessage })
-      .min(0.01, { message: 'Suma turi būti bent 0.01' })
-      .max(maxAmount, { message: `Suma negali viršyti ${maxAmount}` }), // Dynamic max value
+      .number({ message: 'requiredErrMsg' })
+      .min(0.01, { message: 'errMsg1' })
+      .max(maxAmount, { message: 'errMsg2' }),
     [CONSTANTS.payeeAccount]: z
-      .string({ message: requiredMessage })
-      .min(1, { message: 'Gavėjo sąskaita turi būti bent 1 simbolis' })
-      .refine(() => isPayeeAccountValid, { message: 'Gavėjo sąskaita yra neteisinga' }),
+      .string({ message: 'requiredErrMsg' })
+      .min(1, { message: 'errMsg3' })
+      .refine(() => isPayeeAccountValid, { message: 'errMsg4' }),
     [CONSTANTS.purpose]: z
-      .string({ message: requiredMessage })
-      .min(3, { message: 'Paskirtis turi būti bent 3 simboliai' })
-      .max(135, { message: 'Paskirtis negali viršyti 135 simbolių' }),
-    [CONSTANTS.payerAccount]: z
-      .string({ message: requiredMessage })
-      .min(1, { message: 'Mokėtojo sąskaita turi būti bent 1 simbolis' }),
+      .string({ message: 'requiredErrMsg' })
+      .min(3, { message: 'errMsg5' })
+      .max(135, { message: 'errMsg6' }),
+    [CONSTANTS.payerAccount]: z.string({ message: 'requiredErrMsg' }).min(1, { message: 'errMsg7' }),
     [CONSTANTS.payee]: z
-      .string({ message: requiredMessage })
-      .min(1, { message: 'Gavėjo vardas turi būti bent 1 simbolis' })
-      .max(70, { message: 'Gavėjo vardas negali viršyti 70 simbolių' }),
+      .string({ message: 'requiredErrMsg' })
+      .min(1, { message: 'errMsg8' })
+      .max(70, { message: 'errMsg9' }),
   });
 };
 
